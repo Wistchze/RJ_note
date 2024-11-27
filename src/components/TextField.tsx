@@ -1,7 +1,7 @@
 type TextFieldProps = {
     // Props
     name: string;
-    label: string;
+    label?: string;
     value: string;
     placeholder?: string;
     isFull?: boolean;
@@ -28,11 +28,13 @@ const TextField = ({
 
     return (
         <fieldset className='font-["Roboto"] relative my-5'>
-            <label 
-                htmlFor={name}
-                className='bg-white px-3 py-0 text-sm tracking-wide font-bold text-gray-600
-                absolute left-5 -top-3'
-            >{label}</label>
+            {label && 
+                <label 
+                    htmlFor={name}
+                    className='bg-white px-3 py-0 text-sm tracking-wide font-bold text-gray-600
+                    absolute left-5 -top-3'
+                >{label}</label>
+            }
             {!isArea ? 
                 <input
                     // props 
