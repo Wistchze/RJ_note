@@ -1,18 +1,19 @@
-import { ComponentProps } from "react";
+import { ComponentProps } from 'react';
 
-export type ButtonProps = ComponentProps<'button'> & {
+type ButtonProps = ComponentProps<'button'> & {
     text: string;
     isFull?: boolean;
 }
 
-const Button = ({ text, isFull = true }: ButtonProps) => {
+const Button = ({ text, isFull = true, ...rest }: ButtonProps) => {
     return (
         <button
             className={`
-            bg-blue-500 hover:bg-blue-600 p-2 rounded-md 
-            font-bold text-white
-            ${isFull ? 'w-full' : 'w-auto'}`
+            bg-blue-500 hover:bg-blue-600 p-2 rounded-md
+            font-bold text-white text-lg
+            ${isFull && 'w-full'}`
             }
+            {...rest}
         >{text}</button>
     )
 }

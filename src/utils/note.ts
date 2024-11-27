@@ -5,5 +5,3 @@ export type Note = {
     archived: boolean;
     createdAt: string;
 }
-
-export let noteData: Note[] = [];

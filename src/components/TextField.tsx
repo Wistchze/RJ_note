@@ -1,25 +1,30 @@
-export type TextFieldProps = {
+type TextFieldProps = {
+    // Props
     name: string;
     label: string;
+    value: string;
     placeholder?: string;
-    onChange: React.ChangeEventHandler;
     isFull?: boolean;
     isArea?: boolean;
+
+    // Events
+    onChange: React.ChangeEventHandler;
 }
 
 const TextField = ({ 
     name, 
     label, 
-    placeholder = 'Answer here', 
-    onChange, 
+    placeholder = 'Answer here',
+    value,
     isFull = true,
     isArea = false,
+    onChange,
 }: TextFieldProps) => {
     const className = `p-2 rounded-md border-2 shadow-md outline-none
                 border-gray-300 focus:shadow-glow focus:shadow-blue-500 focus:border-blue-500
                 text-black text-sm placeholder-gray-400 
-                ${isFull ? 'w-full' : 'w-auto'}
-                ${isArea ? 'h-32' : ''}`;
+                ${isFull && 'w-full'}
+                ${isArea && 'h-32'}`;
 
     return (
         <fieldset className='font-["Roboto"] relative my-5'>
@@ -33,7 +38,8 @@ const TextField = ({
                     // props 
                     name={name} 
                     placeholder={placeholder} 
-                    onChange={onChange} 
+                    value={value}
+                    onChange={onChange}
 
                     // Styling
                     className={className}
@@ -43,6 +49,7 @@ const TextField = ({
                     // Props
                     name={name}
                     placeholder={placeholder}
+                    value={value}
                     onChange={onChange}
 
                     // Styling

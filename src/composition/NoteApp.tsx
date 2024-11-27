@@ -1,72 +1,40 @@
-import Button from '@/components/Button';
-import TextField from '@/components/TextField';
-import { Note, noteData } from '@/utils/note';
-import { ChangeEvent, ChangeEventHandler, FormEvent, FormEventHandler, useState } from 'react';
+import Form, { FormField, FormSubmitData } from '@/components/Form';
+import { Note } from '@/utils/note';
 
-type FormProps = {
-    onChange: ChangeEventHandler;
-    onSubmit: FormEventHandler;
-}
-const AddNoteForm = ({ onChange, onSubmit }: FormProps) => {
+const NoteApp = () => {
+    const noteData: Note[] = [];
+
+    // ===== Handle Adding Note ===== //
+
+    const noteForm: FormField[] = [
+        { name: 'title', label: 'Judul' },
+        { name: 'body', label: 'Isi Catatan', isArea: true }
+    ];
+
+    const addNote = (data: FormSubmitData) => {
+        // Create new note
+        const newNote: Note = {
+            id: noteData.length + 1,
+            title: data['title'],
+            body: data['body'],
+            archived: false,
+            createdAt: new Date().toISOString()
+        }
+
+        // Add to databsae
+        noteData.push(newNote);
+    }
+
     return (
-        <form className='p-4 shadow-glow' onSubmit={onSubmit}>
-            <h2 className='font-bold uppercase text-center tracking-wider text-xl'>Tambahkan Catatan</h2>
-            <TextField 
-                name='title' 
-                label='Judul'
-                onChange={onChange}
+        <main className='p-4 bg-gray-200 h-screen font-["Roboto"]'>
+            <Form
+                formTitle='Tambahkan Catatan'
+                fields={noteForm}
+                onSubmit={addNote}
+                submitText='Tambahkan'
             />
-            <TextField 
-                name='body' 
-                label='Isi Catatan'
-                onChange={onChange}
-                isArea={true}
-            />
-            <Button text='Tambahkan' type='submit' />
-        </form>
+        </main>
     );
 }
 
-const NoteApp = () => {
-    const [noteForm, setNoteForm] = useState({
-        title: '',
-        body: ''
-    });
-
-    const onAddFormChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setNoteForm({
-            ...noteForm,
-            [name]: value,
-        });
-    }
-
-    const onAddFormSubmit = (e: FormEvent) => {
-        e.preventDefault();
-
-        // New Note
-        const newNote: Note = {
-            id: noteData.length + 1,
-            title: noteForm.title,
-            body: noteForm.body,
-            archived: false,
-            createdAt: Date.now().toLocaleString()
-        };
-        noteData.push(newNote);
-        console.log(noteData);
-
-        // Reset Form
-        setNoteForm({
-            title: '',
-            body: ''
-        });
-    }
-
-    return (
-        <AddNoteForm 
-            onChange={onAddFormChange} 
-            onSubmit={onAddFormSubmit}
-        />
-    );` `
-}
 export default NoteApp;
