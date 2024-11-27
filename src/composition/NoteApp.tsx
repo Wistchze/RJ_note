@@ -1,6 +1,8 @@
+import TextField from '@/components/TextField';
+
 const NoteApp = () => {
     return (
-        <p>Hello World!</p>
+        <TextField name='test' placeholder='hello' onChange={() => {}} label='Testing' />
     );
 }
 

@@ -5,7 +5,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 
 // App
-import NoteApp from './composition/NoteApp'
+import NoteApp from '@/composition/NoteApp'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
