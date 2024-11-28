@@ -1,6 +1,7 @@
 import Button from '@/components/Button';
-import Form, { FormField, FormSubmitData } from '@/components/Form';
+import Form, { FormSubmitData } from '@/components/Form';
 import NoteCard from '@/components/NoteCard';
+import { TextFieldProps } from '@/components/TextField';
 import { Note } from '@/utils/note';
 import { useState } from 'react';
 
@@ -91,7 +92,7 @@ const NoteApp = () => {
 
     // ===== Handle Adding Note ===== //
 
-    const noteForm: FormField[] = [
+    const noteForm: TextFieldProps[] = [
         { name: 'title', label: 'Judul' },
         { name: 'body', label: 'Isi Catatan', isArea: true }
     ];
@@ -128,6 +129,17 @@ const NoteApp = () => {
         setNoteData(updatedNoteData);
     };
 
+    // ===== Handle Search Note ===== //
+
+    const [searchNote, setSearchNote] = useState('');
+    const searchForm: TextFieldProps[] = [
+        { name: 'search', placeholder: 'Cari catatan di sini', onBtnIconClicked: onSearchClicked }
+    ];
+
+    const onSearchClicked = (data: FormSubmitData) => {
+        setSearchNote(data['search']);
+    }
+
     return (
         <main className='p-4 bg-gray-200 h-full font-["Roboto"]'>
             <Form
@@ -137,6 +149,10 @@ const NoteApp = () => {
                 submitText='Tambahkan'
             />
             <TabNote tabNote={tabNote} setTabNote={setTabNote} />
+            <Form 
+                fields={searchForm}
+                hasSubmitBtn={false}
+            />
             <NoteContent tabNote={tabNote} data={noteData} onDelete={removeNote} onArchive={archiveNote} />
         </main>
     );

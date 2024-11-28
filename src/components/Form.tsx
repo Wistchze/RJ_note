@@ -1,18 +1,6 @@
 import { ChangeEvent, FormEvent, useState } from 'react';
 import Button from './Button';
-import TextField from './TextField';
-
-/**
- * To use this form, we MUST define the fields using this type.
- */
-export type FormField = {
-    name: string;
-    label: string;
-    placeholder?: string;
-
-    // Is the field ordinary input or a text area?
-    isArea?: boolean;
-}
+import TextField, { TextFieldProps } from './TextField';
 
 /**
  * When on Submitted, the callback shall have this type to get the data from submited form.
@@ -22,18 +10,19 @@ export type FormSubmitData = {
 }
 
 type FormProps = {
-    fields: FormField[];
-    formTitle: string;
+    fields: TextFieldProps[];
+    formTitle?: string;
     submitText?: string;
+    hasSubmitBtn?: boolean;
 
     // Events
     onChange?: (name: string, value: string) => void;
-    onSubmit: (data: FormSubmitData) => void;
+    onSubmit?: (data: FormSubmitData) => void;
 }
 
-const Form = ({ fields, formTitle, submitText = 'Submit', onChange, onSubmit }: FormProps) => {
+const Form = ({ fields, formTitle, submitText = 'Submit', hasSubmitBtn = true, onChange, onSubmit }: FormProps) => {
     // Helper func to init back to default
-    const initializeFormValues = (fields: FormField[]): { [key: string]: string } => {
+    const initializeFormValues = (fields: TextFieldProps[]): { [key: string]: string } => {
         return fields.reduce((acc, field) => {
             acc[field.name] = ''; // Set each field's value to an empty string
             return acc;
@@ -62,7 +51,7 @@ const Form = ({ fields, formTitle, submitText = 'Submit', onChange, onSubmit }: 
         e.preventDefault();
 
         // Send the data to external onSubmit
-        onSubmit(formValues);
+        if (onSubmit && hasSubmitBtn) onSubmit(formValues);
 
         // Reset the values
         setFormValues(initializeFormValues(fields));
@@ -70,19 +59,20 @@ const Form = ({ fields, formTitle, submitText = 'Submit', onChange, onSubmit }: 
 
     return (
         <form className='p-4 shadow-xl bg-white rounded-md' onSubmit={onSubmitInternal}>
-            <h2 className='font-bold uppercase text-center tracking-wider text-xl'>{formTitle}</h2>
+            {formTitle &&
+                <h2 className='font-bold uppercase text-center tracking-wider text-xl'>{formTitle}</h2>
+            }
             {fields.map(field => (
                 <TextField
                     key={field.name}
-                    name={field.name}
-                    label={field.label}
-                    placeholder={field.placeholder}
-                    value={formValues[field.name]}
-                    isArea={field.isArea}
+                    {...field}
                     onChange={onChangeInternal}
+                    value={formValues[field.name]}
                 />
             ))}
-            <Button text={submitText} type='submit' />
+            {hasSubmitBtn &&
+                <Button text={submitText} type='submit' />
+            }
         </form>
     );
 }

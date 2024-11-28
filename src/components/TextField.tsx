@@ -1,14 +1,19 @@
-type TextFieldProps = {
+import { ChangeEventHandler, MouseEventHandler } from "react";
+import Button from "./Button";
+
+export type TextFieldProps = {
     // Props
     name: string;
     label?: string;
-    value: string;
+    value?: string;
     placeholder?: string;
+    icon?: string;
     isFull?: boolean;
     isArea?: boolean;
 
     // Events
-    onChange: React.ChangeEventHandler;
+    onChange?: ChangeEventHandler;
+    onBtnIconClicked?: MouseEventHandler;
 }
 
 const TextField = ({ 
@@ -16,9 +21,11 @@ const TextField = ({
     label, 
     placeholder = 'Answer here',
     value,
+    icon,
     isFull = true,
     isArea = false,
     onChange,
+    onBtnIconClicked
 }: TextFieldProps) => {
     const className = `p-2 rounded-md border-2 shadow-md outline-none
                 border-gray-300 focus:shadow-glow focus:shadow-blue-500 focus:border-blue-500
@@ -56,6 +63,15 @@ const TextField = ({
 
                     // Styling
                     className={className}
+                />
+            }
+            {icon &&
+                <Button 
+                    icon={icon}
+                    className={`absolute p-1 top-1/2 -translate-y-1/2 right-3 
+                        rounded-full text-xs`} 
+                    isFull={false}
+                    onClick={onBtnIconClicked}
                 />
             }
         </fieldset>
