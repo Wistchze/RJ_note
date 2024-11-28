@@ -13,7 +13,7 @@ const Button = ({ icon, text, isFull = true, className, ...rest }: ButtonProps) 
             className={clsx(
                 'bg-blue-500 hover:bg-blue-600 p-2 rounded-md font-bold text-white text-lg',
                 { 'w-full': isFull, 'w-fit': !isFull },
-                className // User-provided classes override or add to the default
+                className
             )}
             {...rest}
         >

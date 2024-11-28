@@ -2,7 +2,7 @@ import Button from '@/components/Button';
 import Form, { FormSubmitData } from '@/components/Form';
 import NoteCard from '@/components/NoteCard';
 import { TextFieldProps } from '@/components/TextField';
-import { Note } from '@/utils/note';
+import { initData, Note } from '@/utils/note';
 import { useState } from 'react';
 
 // ===== Type Definitions ===== //
@@ -15,6 +15,7 @@ type TabNoteProps = {
 type NoteContentProps = {
     tabNote: boolean;
     data: Note[];
+    search: string;
     onDelete: (id: number) => void;
     onArchive: (id: number) => void;
 };
@@ -32,63 +33,53 @@ const TabNote = ({ tabNote, setTabNote }: TabNoteProps) => {
                 onClick={() => setTabNote(true)}
             />
             <Button 
-                text='Arsip' 
+                text='Arsip'
                 className={`rounded-none ${tabNote && 'bg-gray-400 hover:bg-gray-500'}`}
                 onClick={() => setTabNote(false)}
             />
         </div>
     );
 }
+const NoteContent = ({ tabNote, data, search, onDelete, onArchive }: NoteContentProps) => {
+    // Get the filtered data first
+    const filteredData = data.filter(note => 
+        note.archived !== tabNote && 
+        (search === '' || note.title.toLowerCase().includes(search.toLowerCase()))
+    );
 
-const NoteContent = ({ tabNote, data, onDelete, onArchive }: NoteContentProps) => {
     return (
-        <div className='grid grid-cols-1 justify-items-center gap-x-4 gap-y-2 mt-2'>
-            {data.filter(note => note.archived !== tabNote).map(note => (
-                <NoteCard
-                    key={note.id}
-                    id={note.id}
-                    title={note.title}
-                    body={note.body}
-                    date={note.createdAt}
-                    onDelete={onDelete}
-                    onArchive={onArchive}
-                />
-            ))}
+        <div className={`${filteredData.length > 0 && 'grid grid-cols-1 md:grid-cols-2'} justify-items-center gap-x-4 gap-y-2 mt-2`}>
+            {filteredData.length > 0 ? (
+                // Render the NoteCards if data is not empty
+                filteredData.map(note => (
+                    <NoteCard
+                        key={note.id}
+                        id={note.id}
+                        title={note.title}
+                        body={note.body}
+                        date={note.createdAt}
+                        onDelete={onDelete}
+                        onArchive={onArchive}
+                    />
+                ))
+            ) : (
+                // Render the "No Data" message if filteredData is empty
+                <p className="font-bold text-2xl uppercase text-center ">Tidak ada Catatan!</p>
+            )}
         </div>
+    );
+};
+
+const NoteTitleCounter = ({ titleCount }: { titleCount: number}) => {
+    return (
+        <p 
+            className={`${titleCount === 50 && 'hidden'} absolute right-10 md:right-16 top-14 md:top-[5.6rem] z-10 text-sm font-bold`}
+        >Sisa: {titleCount}</p>
     );
 }
 
 const NoteApp = () => {
-    const [noteData, setNoteData] = useState<Note[]>([
-        {
-            id: 1,
-            title: 'Testing',
-            body: 'Ini catatan satu',
-            createdAt: new Date().toLocaleDateString('id-ID'),
-            archived: false
-        },
-        {
-            id: 2,
-            title: 'Testing Dua',
-            body: 'Ini catatan dua',
-            createdAt: new Date().toLocaleDateString('id-ID'),
-            archived: false
-        },
-        {
-            id: 3,
-            title: 'Testing Tiga',
-            body: 'Ini catatan tiga',
-            createdAt: new Date().toLocaleDateString('id-ID'),
-            archived: false
-        },
-        {
-            id: 4,
-            title: 'Testing Empat',
-            body: 'Ini catatan empat',
-            createdAt: new Date().toLocaleDateString('id-ID'),
-            archived: false
-        }
-    ]);
+    const [noteData, setNoteData] = useState<Note[]>(initData);
 
     // ===== Handle Adding Note ===== //
 
@@ -96,6 +87,7 @@ const NoteApp = () => {
         { name: 'title', label: 'Judul' },
         { name: 'body', label: 'Isi Catatan', isArea: true }
     ];
+    const [titleCount, setTitleCount] = useState(50);
 
     const addNote = (data: FormSubmitData) => {
         // Create new note
@@ -104,12 +96,22 @@ const NoteApp = () => {
             title: data['title'],
             body: data['body'],
             archived: false,
-            createdAt: new Date().toLocaleDateString('id-ID')
+            createdAt: new Date().toISOString()
         };
 
         // Add to database
         setNoteData([...noteData, newNote]);
     };
+
+    const onChangeNote = (name: string, value: string) => {
+        // Set the max limit to 50 for title
+        if (name === 'title') {
+            if (value.length <= 50) setTitleCount(50 - value.length);
+            else return value.slice(0, 50); // Truncate the value to 50 characters
+        }
+
+        return value;
+    }
 
     // ===== Handle Removing Note ===== //
 
@@ -132,19 +134,20 @@ const NoteApp = () => {
     // ===== Handle Search Note ===== //
 
     const [searchNote, setSearchNote] = useState('');
+    const onSearchClicked = (data: string) => {
+        setSearchNote(data);
+    }
     const searchForm: TextFieldProps[] = [
-        { name: 'search', placeholder: 'Cari catatan di sini', onBtnIconClicked: onSearchClicked }
+        { name: 'search', placeholder: 'Cari catatan di sini (Kosongkan untuk reset)', icon: 'fa-solid fa-magnifying-glass', onBtnIconClicked: onSearchClicked }
     ];
 
-    const onSearchClicked = (data: FormSubmitData) => {
-        setSearchNote(data['search']);
-    }
-
     return (
-        <main className='p-4 bg-gray-200 h-full font-["Roboto"]'>
+        <main className='relative p-4 w-full md:w-[38rem] lg:w-1/2 mx-auto h-full font-["Roboto"]'>
+            <NoteTitleCounter titleCount={titleCount} />
             <Form
                 formTitle='Tambahkan Catatan'
                 fields={noteForm}
+                onChange={onChangeNote}
                 onSubmit={addNote}
                 submitText='Tambahkan'
             />
@@ -153,7 +156,13 @@ const NoteApp = () => {
                 fields={searchForm}
                 hasSubmitBtn={false}
             />
-            <NoteContent tabNote={tabNote} data={noteData} onDelete={removeNote} onArchive={archiveNote} />
+            <NoteContent 
+                tabNote={tabNote} 
+                data={noteData} 
+                search={searchNote}
+                onDelete={removeNote}
+                onArchive={archiveNote}
+            />
         </main>
     );
 }

@@ -1,4 +1,5 @@
 import { ChangeEvent, FormEvent, useState } from 'react';
+
 import Button from './Button';
 import TextField, { TextFieldProps } from './TextField';
 
@@ -16,7 +17,7 @@ type FormProps = {
     hasSubmitBtn?: boolean;
 
     // Events
-    onChange?: (name: string, value: string) => void;
+    onChange?: (name: string, value: string) => string;
     onSubmit?: (data: FormSubmitData) => void;
 }
 
@@ -34,16 +35,17 @@ const Form = ({ fields, formTitle, submitText = 'Submit', hasSubmitBtn = true, o
 
     // Internal on change
     const onChangeInternal = (e: ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
+        const { name } = e.target;
+        let { value } = e.target;
+
+        // Call the on change if existed
+        if (onChange) value = onChange(name, value);
 
         // Change the internal data
         setFormValues({
             ...formValues,
             [name]: value
         })
-
-        // Call the on change if existed
-        if (onChange) onChange(name, value);
     }
 
     // Internal on submit
@@ -58,7 +60,7 @@ const Form = ({ fields, formTitle, submitText = 'Submit', hasSubmitBtn = true, o
     }
 
     return (
-        <form className='p-4 shadow-xl bg-white rounded-md' onSubmit={onSubmitInternal}>
+        <form className='py-4 px-4 md:px-10 shadow-xl bg-white rounded-md' onSubmit={onSubmitInternal}>
             {formTitle &&
                 <h2 className='font-bold uppercase text-center tracking-wider text-xl'>{formTitle}</h2>
             }

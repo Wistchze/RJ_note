@@ -1,5 +1,5 @@
-import { ChangeEventHandler, MouseEventHandler } from "react";
-import Button from "./Button";
+import { ChangeEventHandler, MouseEvent } from 'react';
+import Button from './Button';
 
 export type TextFieldProps = {
     // Props
@@ -13,14 +13,14 @@ export type TextFieldProps = {
 
     // Events
     onChange?: ChangeEventHandler;
-    onBtnIconClicked?: MouseEventHandler;
+    onBtnIconClicked?: (data: string) => void;
 }
 
 const TextField = ({ 
     name, 
     label, 
+    value = '',
     placeholder = 'Answer here',
-    value,
     icon,
     isFull = true,
     isArea = false,
@@ -29,9 +29,15 @@ const TextField = ({
 }: TextFieldProps) => {
     const className = `p-2 rounded-md border-2 shadow-md outline-none
                 border-gray-300 focus:shadow-glow focus:shadow-blue-500 focus:border-blue-500
-                text-black text-sm placeholder-gray-400 
+                text-black text-sm placeholder-gray-400 autofill:bg-white
                 ${isFull && 'w-full'}
                 ${isArea && 'h-32'}`;
+
+    const onBtnIconClickedInternal = (e: MouseEvent) => {
+        e.preventDefault();
+        
+        if (onBtnIconClicked) onBtnIconClicked(value);
+    }
 
     return (
         <fieldset className='font-["Roboto"] relative my-5'>
@@ -49,6 +55,7 @@ const TextField = ({
                     placeholder={placeholder} 
                     value={value}
                     onChange={onChange}
+                    autoComplete='off'
 
                     // Styling
                     className={className}
@@ -71,7 +78,7 @@ const TextField = ({
                     className={`absolute p-1 top-1/2 -translate-y-1/2 right-3 
                         rounded-full text-xs`} 
                     isFull={false}
-                    onClick={onBtnIconClicked}
+                    onClick={onBtnIconClickedInternal}
                 />
             }
         </fieldset>

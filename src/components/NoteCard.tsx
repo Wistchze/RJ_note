@@ -20,12 +20,22 @@ const NoteHeader = ({ id, title, date, onDelete, onArchive }: NoteCardProps) => 
         if (onArchive && id) onArchive(id)
     }
 
+    const formatDate = (date: string) => {
+        const options: Intl.DateTimeFormatOptions = {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          }
+          return new Date(date).toLocaleDateString('id-ID', options)
+    }
+
     return (
         <div className='flex justify-between items-center'>
             {/* Text Info */}
             <div className='-space-y-1'>
                 <h1 className='font-bold text-xl tracking-wider'>{title}</h1>
-                <p className='text-xs text-gray-400'>{date}</p>
+                <p className='text-xs text-gray-400'>{date && formatDate(date)}</p>
             </div>
 
             {/* Buttons */}
