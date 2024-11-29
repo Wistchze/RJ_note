@@ -23,7 +23,7 @@ type FormProps = {
 
 const Form = ({ fields, formTitle, submitText = 'Submit', hasSubmitBtn = true, onChange, onSubmit }: FormProps) => {
     // Helper func to init back to default
-    const initializeFormValues = (fields: TextFieldProps[]): { [key: string]: string } => {
+    function initializeFormValues(fields: TextFieldProps[]): { [key: string]: string } {
         return fields.reduce((acc, field) => {
             acc[field.name] = ''; // Set each field's value to an empty string
             return acc;
@@ -34,7 +34,7 @@ const Form = ({ fields, formTitle, submitText = 'Submit', hasSubmitBtn = true, o
     const [formValues, setFormValues] = useState(initializeFormValues(fields));
 
     // Internal on change
-    const onChangeInternal = (e: ChangeEvent<HTMLInputElement>) => {
+    function onChangeInternal(e: ChangeEvent<HTMLInputElement>) {
         const { name } = e.target;
         let { value } = e.target;
 
@@ -49,7 +49,7 @@ const Form = ({ fields, formTitle, submitText = 'Submit', hasSubmitBtn = true, o
     }
 
     // Internal on submit
-    const onSubmitInternal = (e: FormEvent) => {
+    function onSubmitInternal(e: FormEvent) {
         e.preventDefault();
 
         // Send the data to external onSubmit

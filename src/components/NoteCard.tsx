@@ -12,15 +12,15 @@ type NoteCardProps = {
 }
 
 const NoteHeader = ({ id, title, date, onDelete, onArchive }: NoteCardProps) => {
-    const onDeleteInternal = () => {
+    function onDeleteInternal() {
         if (onDelete && id) onDelete(id)
     }
 
-    const onArchiveInternal = () => {
+    function onArchiveInternal() {
         if (onArchive && id) onArchive(id)
     }
 
-    const formatDate = (date: string) => {
+    function formatDate(date: string) {
         const options: Intl.DateTimeFormatOptions = {
             weekday: 'long',
             year: 'numeric',

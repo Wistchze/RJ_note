@@ -89,10 +89,10 @@ const NoteApp = () => {
     ];
     const [titleCount, setTitleCount] = useState(50);
 
-    const addNote = (data: FormSubmitData) => {
+    function addNote(data: FormSubmitData) {
         // Create new note
         const newNote: Note = {
-            id: noteData.length + 1,
+            id: Date.now(),
             title: data['title'],
             body: data['body'],
             archived: false,
@@ -103,7 +103,7 @@ const NoteApp = () => {
         setNoteData([...noteData, newNote]);
     };
 
-    const onChangeNote = (name: string, value: string) => {
+    function onChangeNote(name: string, value: string) {
         // Set the max limit to 50 for title
         if (name === 'title') {
             if (value.length <= 50) setTitleCount(50 - value.length);
@@ -115,7 +115,7 @@ const NoteApp = () => {
 
     // ===== Handle Removing Note ===== //
 
-    const removeNote = (id: number) => {
+    function removeNote(id: number) {
         const newNoteData = noteData.filter(note => id !== note.id);
         setNoteData(newNoteData);
     };
@@ -124,7 +124,7 @@ const NoteApp = () => {
 
     const [tabNote, setTabNote] = useState(true);
 
-    const archiveNote = (id: number) => {
+    function archiveNote(id: number) {
         const updatedNoteData = noteData.map(item => 
             item.id === id ? { ...item, archived: !item.archived } : item
         );
@@ -134,7 +134,7 @@ const NoteApp = () => {
     // ===== Handle Search Note ===== //
 
     const [searchNote, setSearchNote] = useState('');
-    const onSearchClicked = (data: string) => {
+    function onSearchClicked(data: string) {
         setSearchNote(data);
     }
     const searchForm: TextFieldProps[] = [

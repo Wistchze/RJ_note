@@ -33,7 +33,7 @@ const TextField = ({
                 ${isFull && 'w-full'}
                 ${isArea && 'h-32'}`;
 
-    const onBtnIconClickedInternal = (e: MouseEvent) => {
+    function onBtnIconClickedInternal(e: MouseEvent) {
         e.preventDefault();
         
         if (onBtnIconClicked) onBtnIconClicked(value);
